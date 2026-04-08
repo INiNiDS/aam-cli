@@ -1,0 +1,62 @@
+name: Bug report
+description: Report a reproducible bug to help us improve aam-cli.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+        Please include enough detail so we can reproduce it quickly.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `aam --version`.
+      placeholder: "aam 0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, terminal, and Rust version if relevant.
+      placeholder: "Ubuntu 24.04, fish, rustc 1.80"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide a minimal reproduction.
+      placeholder: |
+        1. Run `aam check test.aam`
+        2. Run `aam tui test.aam`
+        3. Observe error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste error messages, stack traces, or screenshots.
+      render: shell
+

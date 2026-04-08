@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/ininids/aam-cli/security/advisories/new
+    about: Please report vulnerabilities privately via GitHub Security Advisories.
+  - name: Questions and support
+    url: https://github.com/ininids/aam-cli/discussions
+    about: Use Discussions for usage questions and general help.
+
