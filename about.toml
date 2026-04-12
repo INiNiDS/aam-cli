@@ -3,5 +3,6 @@ accepted = [
     "MIT",
     "MPL-2.0",
     "Unicode-3.0",
-    "Zlib"
+    "Zlib",
+    "GPL-3.0-or-later",
 ]

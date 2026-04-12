@@ -3,7 +3,7 @@ name = "aam"
 version = "0.1.1"
 edition = "2024"
 authors = ["INiNiDS"]
-license = "Apache-2.0"
+license = "GPL-3.0-or-later"
 description = "AAM CLI is a CLI for AAM (learn more about AAM at https://aam.ininids.in.rs)"
 readme = "README.md"
 
