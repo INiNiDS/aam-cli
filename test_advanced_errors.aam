@@ -1,0 +1,27 @@
+# Advanced test file with various errors
+name = "Advanced Test"
+
+# Missing equals sign
+invalid syntax
+
+# Invalid type reference
+@type MyType = UnknownType
+
+# Schema without body
+@schema IncompleteSchema
+
+# Circular type reference
+@type TypeA = TypeB
+@type TypeB = TypeA
+
+# Valid key-value pair
+valid_key = "valid value"
+
+# Another invalid line
+this is not valid
+
+# Unclosed string
+unclosed = "string without closing
+
+# End of file
+

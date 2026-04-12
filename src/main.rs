@@ -77,7 +77,7 @@ enum Commands {
     Lsp,
 }
 
-fn run_check(file: &PathBuf) -> Result<()> {
+fn run_check(file: &PathBuf) {
     match AAM::load(file) {
         Ok(aam) => {
             println!("✓ File {} is valid", file.display());
@@ -142,36 +142,36 @@ fn run_get(file: &PathBuf, key: &str) -> Result<()> {
         )
     })?;
 
-    match aam.get(key) {
-        Some(value) => {
-            println!("{}", value);
-            Ok(())
-        }
-        None => {
-            eprintln!("✗ Key '{}' not found in file {}", key, file.display());
-            // Try to find similar keys
-            let similar: Vec<&str> = aam
-                .keys()
-                .iter()
-                .filter(|k| k.contains(key) || key.contains(*k))
-                .copied()
-                .collect();
-            if !similar.is_empty() {
-                eprintln!("  Did you mean:");
-                for k in similar.iter().take(5) {
-                    eprintln!("    - {}", k);
-                }
+    if let Some(value) = aam.get(key) {
+        println!("{value}");
+        Ok(())
+    } else {
+        eprintln!("✗ Key '{}' not found in file {}", key, file.display());
+        // Try to find similar keys
+        let similar: Vec<&str> = aam
+            .keys()
+            .iter()
+            .filter(|k| k.contains(key) || key.contains(*k))
+            .copied()
+            .collect();
+        if !similar.is_empty() {
+            eprintln!("  Did you mean:");
+            for k in similar.iter().take(5) {
+                eprintln!("    - {k}");
             }
-            std::process::exit(1);
         }
+        std::process::exit(1);
     }
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Some(Commands::Check { file }) => run_check(&file),
+        Some(Commands::Check { file }) => {
+            run_check(&file);
+            Ok(())
+        }
         Some(Commands::Format { file, dry_run }) => run_format(&file, dry_run),
         Some(Commands::Get { file, key }) => run_get(&file, &key),
         Some(Commands::Lsp) => Ok(lsp::run_lsp()?),

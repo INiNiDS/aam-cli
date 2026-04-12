@@ -1,0 +1,15 @@
+# Test AAM file for syntax highlighting
+name = "Test Project"
+version = "1.0.0"
+description = "A test file for checking syntax highlighting"
+
+# This is a comment
+@directive key=value
+
+# Some nested structure
+config.database.host = "localhost"
+config.database.port = 5432
+
+# Another value
+active = true
+

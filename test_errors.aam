@@ -1,0 +1,6 @@
+name = "Test"
+invalid line without equals
+@type MyType = string
+
+key2 = value2
+bad directive @unknown

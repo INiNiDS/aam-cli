@@ -1,8 +1,12 @@
-// src/lsp.rs
+// SPDX-FileCopyrightText: 2026 Nikita Goncharov
+// SPDX-License-Identifier: GPL-3.0-or-later
+//
+// Ported from APACHE 2.0
+
 use aam_rs::error::AamlError;
 use aam_rs::pipeline::{DefaultLexer, DefaultParser, Lexer, Parser};
 use tower_lsp::jsonrpc::Result;
-use tower_lsp::lsp_types::*;
+use tower_lsp::lsp_types::{InitializeParams, InitializeResult, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, OneOf, InitializedParams, MessageType, DidOpenTextDocumentParams, DidChangeTextDocumentParams, DidCloseTextDocumentParams, DocumentFormattingParams, TextEdit, Range, Position, Url, Diagnostic, DiagnosticSeverity};
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 
 pub struct AamLsp {
@@ -60,6 +64,7 @@ impl LanguageServer for AamLsp {
             aam_rs::aam::AAM::lsp_assist(&source, &aam_rs::pipeline::FormattingOptions::default());
 
         if let Some(formatted) = assist.formatted {
+            #[allow(clippy::cast_possible_truncation)]
             let line_count = source.lines().count() as u32;
             Ok(Some(vec![TextEdit {
                 range: Range {
@@ -113,7 +118,9 @@ fn run_pipeline(source: &str) -> Vec<Diagnostic> {
 fn aaml_error_to_diagnostic(err: &AamlError) -> Diagnostic {
     let (line, col) = extract_position(err);
     // AamlError line/col — 1-based, LSP — 0-based
+    #[allow(clippy::cast_possible_truncation)]
     let line = line.saturating_sub(1) as u32;
+    #[allow(clippy::cast_possible_truncation)]
     let col = col.saturating_sub(1) as u32;
 
     Diagnostic {
@@ -138,12 +145,16 @@ fn extract_position(err: &AamlError) -> (usize, usize) {
     match err {
         AamlError::LexError { line, column, .. } => (*line, *column),
         AamlError::ParseError { line, .. } => (*line, 0),
-        AamlError::SchemaValidationError { .. } => (1, 0),
-        AamlError::InvalidType { .. } => (1, 0),
+        // These all default to (1, 0)
         _ => (1, 0),
     }
 }
 
+/// Runs the LSP server.
+///
+/// # Errors
+///
+/// Returns an error if the LSP server fails to start or encounters an unrecoverable error.
 pub fn run_lsp() -> anyhow::Result<()> {
     let rt = tokio::runtime::Runtime::new()?;
     rt.block_on(async {
