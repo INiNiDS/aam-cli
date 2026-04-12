@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Nikita Goncharov
+// SPDX-License-Identifier: GPL-3.0-or-later
+//
+// Ported from APACHE 2.0
+
 pub mod lsp;
 pub mod tui;
 
@@ -9,6 +14,28 @@ use std::fs;
 use std::path::PathBuf;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+// HIGH COMPLEXITY
+fn strip_ansi_codes(s: &str) -> String {
+    let mut result = String::new();
+    let mut chars = s.chars().peekable();
+
+    while let Some(ch) = chars.next() {
+        if ch == '\u{001b}' {
+            chars.next();
+            while let Some(&next_ch) = chars.peek() {
+                chars.next();
+                if next_ch.is_alphabetic() {
+                    break;
+                }
+            }
+        } else {
+            result.push(ch);
+        }
+    }
+
+    result
+}
 
 #[derive(Parser)]
 #[command(name = "aam")]
@@ -61,12 +88,11 @@ fn run_check(file: &PathBuf) -> Result<()> {
             if let Some(types) = aam.types() {
                 println!("  Found {} type(s)", types.len());
             }
-            Ok(())
         }
         Err(errors) => {
             eprintln!("✗ Errors in file {}:", file.display());
             for err in &errors {
-                eprintln!("  {err}");
+                eprintln!("  {}", strip_ansi_codes(&err.to_string()));
             }
             std::process::exit(1);
         }
@@ -82,7 +108,7 @@ fn run_format(file: &PathBuf, dry_run: bool) -> Result<()> {
             "File contains parsing errors:\n{}",
             errors
                 .iter()
-                .map(|e| e.to_string())
+                .map(|e| strip_ansi_codes(&e.to_string()))
                 .collect::<Vec<_>>()
                 .join("\n")
         )
@@ -110,7 +136,7 @@ fn run_get(file: &PathBuf, key: &str) -> Result<()> {
             "File contains parsing errors:\n{}",
             errors
                 .iter()
-                .map(|e| e.to_string())
+                .map(|e| strip_ansi_codes(&e.to_string()))
                 .collect::<Vec<_>>()
                 .join("\n")
         )
