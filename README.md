@@ -6,11 +6,11 @@ A powerful and intuitive CLI for working with AAM (Abstract Alias Mapping) files
 
 ### **Quick Access Commands**
 
-* **aam-cli check \<file\>** – Validate an AAM file for errors.
-* **aam-cli format \<file\>** – Format an AAM file.
-* **aam-cli get \<file\> \<key\>** – Retrieve a value by its key.
-* **aam-cli tui \[files...\]** – Launch the interactive TUI editor.
-* **aam-cli lsp** – Start the LSP server.
+* **aam check <file>** – Validate an AAM file for errors.
+* **aam format <file>** – Format an AAM file.
+* **aam get <file> <key>** – Retrieve a value by its key.
+* **aam [files...]** — Launch the interactive TUI editor.
+* **aam lsp** – Start the LSP server.
 
 ### **TUI (Terminal User Interface)**
 
@@ -32,44 +32,62 @@ A modern TUI built with ratatui, featuring a rich set of capabilities:
 
 #### **Hotkeys**
 
-| Key | Action |
-| :---- | :---- |
-| Ctrl+T | Check file |
-| Ctrl+F | Format file |
-| Ctrl+S | Save file |
-| Ctrl+Q | Quit |
-| Ctrl+H | Toggle help |
-| Tab | Switch focus (Editor ↔ Input field) |
-| Ctrl+Tab | Next tab |
-| Enter | Execute command from input field |
-| Esc | Close help window |
+| Key       | Action                              |
+|:----------|:------------------------------------|
+| Ctrl+T    | Check file                          |
+| Ctrl+F    | Format file                         |
+| Ctrl+S    | Save file                           |
+| Ctrl+Q    | Quit                                |
+| Ctrl+H    | Toggle help                         |
+| Tab       | Switch focus (Editor ↔ Input field) |
+| Ctrl+-->  | Next tab                            |
+| Ctrl+ <-- | Previous Tab                        |
+| Enter     | Execute command from input field    |
+| Esc       | Close help window                   |
 
 #### **Command Line Inputs**
 
 You can type commands directly into the TUI input field:
 
-* check or c – Check file
-* format, fmt, or f – Format file
+* check – Check file
+* format – Format file
 * save or w – Save file
-* get \<key\> or g \<key\> – Get value by key
-* help or h – Show help
-* quit or q – Exit
+* get <key> – Get value by key
+* help – Show help
+* quit – Exit
 
 ## **Installation**
+## Via bash
+```bash
+curl -fsSL https://raw.githubusercontent.com/ininids/aam-cli/main/install.sh | sh
+```
+## AUR
+Install with your favorite AUR helper:
+```bash
+# Coming soon
+paru -S aam-cli
+```
+## Via Homebrew
+```bash
+brew install ininids/tap/aam
+```
+## Via Cargo 
+To install the CLI tool globally:
+```bash
+cargo install aam
+```
 
-To install the CLI tool globally:  
-cargo install \--path .
-
-Or install it from source:  
-git clone \[https://github.com/ininids/aam-cli\](https://github.com/ininids/aam-cli)  
+## From source:  
+```bash
+git clone https://github.com/ininids/aam-cli
 cd aam-cli  
-cargo install \--path .
-
+cargo install --path .
+```
 ## **Usage Examples**
 
 ### **Validating a File**
 
-aam-cli check config.aam
+aam check config.aam
 
 **Output:**  
 ✓ config.aam successfully validated  
@@ -87,22 +105,22 @@ localhost
 ### **Formatting a File**
 
 \# Output to stdout  
-aam-cli format config.aam
+aam format config.aam
 
 \# Format in-place  
-aam-cli format config.aam \--inplace
+aam format config.aam \--inplace
 
 ### **Launching TUI**
 
 \# With one file  
-aam-cli tui config.aam
+aam tui config.aam
 
 \# With multiple files  
-aam-cli tui config.aam database.aam schema.aam
+aam tui config.aam database.aam schema.aam
 
 ### **Running the LSP Server**
 
-aam-cli lsp
+aam lsp
 
 ## **Dependencies**
 
@@ -116,9 +134,9 @@ aam-cli lsp
 ## **Project Structure**
 
 src/  
-├── main.rs    \# Main entry point, CLI commands  
-├── tui.rs     \# TUI interface, animations, and multi-file logic  
-└── lsp.rs     \# Language Server Protocol implementation
+├── main.rs \# Main entry point, CLI commands  
+├── tui.rs \# TUI interface, animations, and multi-file logic  
+└── lsp.rs \# Language Server Protocol implementation
 
 ## **Implementation Details**
 
