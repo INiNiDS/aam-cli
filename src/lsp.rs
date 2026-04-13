@@ -6,7 +6,12 @@
 use aam_rs::error::AamlError;
 use aam_rs::pipeline::{DefaultLexer, DefaultParser, Lexer, Parser};
 use tower_lsp::jsonrpc::Result;
-use tower_lsp::lsp_types::{InitializeParams, InitializeResult, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, OneOf, InitializedParams, MessageType, DidOpenTextDocumentParams, DidChangeTextDocumentParams, DidCloseTextDocumentParams, DocumentFormattingParams, TextEdit, Range, Position, Url, Diagnostic, DiagnosticSeverity};
+use tower_lsp::lsp_types::{
+    Diagnostic, DiagnosticSeverity, DidChangeTextDocumentParams, DidCloseTextDocumentParams,
+    DidOpenTextDocumentParams, DocumentFormattingParams, InitializeParams, InitializeResult,
+    InitializedParams, MessageType, OneOf, Position, Range, ServerCapabilities,
+    TextDocumentSyncCapability, TextDocumentSyncKind, TextEdit, Url,
+};
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 
 pub struct AamLsp {

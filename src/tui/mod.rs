@@ -18,22 +18,22 @@ use ratatui::crossterm::{
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
+use std::fs;
 use std::io;
 use std::path::PathBuf;
 use std::time::Instant;
 use tui_textarea::Input;
-use std::fs;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const KNOWN_COMMANDS: &[&str] = &[
     "open ", "save", "check", "format", "quit", "help", "get ", "close", "mode",
 ];
 
-// Автодополнение путей для команды open
+// Path autocompletion for the open command
 pub fn get_path_completions(partial_path: &str) -> Vec<String> {
     let mut completions = Vec::new();
 
-    // Если путь пустой, показываем файлы в текущей директории
+    // If path is empty, show files in the current directory
     let (dir_path, name_prefix) = if partial_path.is_empty() {
         (".".to_string(), "".to_string())
     } else if partial_path.ends_with('/') {
@@ -60,7 +60,7 @@ pub fn get_path_completions(partial_path: &str) -> Vec<String> {
                 let file_name = entry.file_name();
                 let file_name_str = file_name.to_string_lossy().to_string();
 
-                // Фильтруем по префиксу
+                // Filter by prefix
                 if file_name_str.starts_with(&name_prefix) {
                     let full_path = entry.path();
                     let display_path = if metadata.is_dir() {
@@ -238,14 +238,19 @@ impl<'a> App<'a> {
     fn handle_input_autocomplete(&mut self) {
         let parts: Vec<&str> = self.input_line.split_whitespace().collect();
 
-        // Автодополнение для команды "open"
+        // Autocompletion for the "open" command
         if parts.len() == 1 && parts[0] == "open" {
             if let Some(first_completion) = get_path_completions("").first() {
                 self.input_line = format!("open {}", first_completion);
             }
         } else if parts.len() >= 2 && (parts[0] == "open" || parts[0] == "o") {
-            // Получаем уже набранный путь
-            let input_after_open = self.input_line.split_whitespace().skip(1).collect::<Vec<_>>().join(" ");
+            // Get the already typed path
+            let input_after_open = self
+                .input_line
+                .split_whitespace()
+                .skip(1)
+                .collect::<Vec<_>>()
+                .join(" ");
             if let Some(first_completion) = get_path_completions(&input_after_open).first() {
                 self.input_line = format!("open {}", first_completion);
             }
@@ -257,7 +262,8 @@ impl<'a> App<'a> {
             return false;
         }
 
-        if key.code == KeyCode::Esc || key.code == KeyCode::Enter || key.code == KeyCode::Char('q') {
+        if key.code == KeyCode::Esc || key.code == KeyCode::Enter || key.code == KeyCode::Char('q')
+        {
             self.show_help = false;
             self.error_message = None;
         }
@@ -307,7 +313,7 @@ impl<'a> App<'a> {
             KeyCode::PageDown => self.next_tab(),
             KeyCode::PageUp => self.prev_tab(),
             KeyCode::Tab => {
-                // Если в input области, попробуем автодополнение
+                // If in input area, try autocompletion
                 if self.focus == FocusArea::Input && self.input_line.starts_with("open") {
                     self.handle_input_autocomplete();
                 } else {
@@ -405,7 +411,7 @@ impl<'a> App<'a> {
         self.scanner_pos = (self.scanner_pos + base_speed * speed_mult * dt) % total_perimeter;
     }
 
-    #[must_use] 
+    #[must_use]
     pub fn is_file_opened(&self, path: &PathBuf) -> bool {
         self.files.iter().any(|file| file.path == *path)
     }
@@ -430,7 +436,7 @@ impl<'a> App<'a> {
         }
     }
 
-    #[must_use] 
+    #[must_use]
     pub fn get_active_file(&self) -> Option<&FileTab<'a>> {
         self.active_file_index.and_then(|i| self.files.get(i))
     }
@@ -441,7 +447,9 @@ impl<'a> App<'a> {
     }
 
     pub fn save_active_file(&mut self) {
-        let Some(index) = self.active_file_index else { return };
+        let Some(index) = self.active_file_index else {
+            return;
+        };
 
         let content = self.files[index].textarea.lines().join("\n");
         let path = self.files[index].path.clone();
@@ -464,16 +472,20 @@ impl<'a> App<'a> {
             self.status_message = format!("✓ Saved, but has {error_count} errors");
             if let Some(line) = self.files[index].file_errors.first().map(|e| e.line) {
                 #[allow(clippy::cast_possible_truncation)]
-                self.files[index].textarea.move_cursor(tui_textarea::CursorMove::Jump(
-                    (line.saturating_sub(1)) as u16,
-                    0,
-                ));
+                self.files[index]
+                    .textarea
+                    .move_cursor(tui_textarea::CursorMove::Jump(
+                        (line.saturating_sub(1)) as u16,
+                        0,
+                    ));
             }
         }
     }
 
     pub fn check_active_file(&mut self) {
-        let Some(index) = self.active_file_index else { return };
+        let Some(index) = self.active_file_index else {
+            return;
+        };
 
         self.files[index].check_validity();
         let is_valid = self.files[index].valid;
@@ -488,10 +500,12 @@ impl<'a> App<'a> {
             self.show_diagnostics = true;
             if let Some(line) = self.files[index].file_errors.first().map(|e| e.line) {
                 #[allow(clippy::cast_possible_truncation)]
-                self.files[index].textarea.move_cursor(tui_textarea::CursorMove::Jump(
-                    (line.saturating_sub(1)) as u16,
-                    0,
-                ));
+                self.files[index]
+                    .textarea
+                    .move_cursor(tui_textarea::CursorMove::Jump(
+                        (line.saturating_sub(1)) as u16,
+                        0,
+                    ));
             }
         }
     }

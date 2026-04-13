@@ -1,36 +1,13 @@
 // SPDX-FileCopyrightText: 2026 Nikita Goncharov
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::utils::strip_ansi_codes;
 use aam_rs::aam::AAM;
 use aam_rs::error::AamError;
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span};
 use std::path::PathBuf;
 use tui_textarea::TextArea;
-
-// Функция для удаления ANSI escape кодов
-fn strip_ansi_codes(s: &str) -> String {
-    let mut result = String::new();
-    let mut chars = s.chars().peekable();
-
-    while let Some(ch) = chars.next() {
-        if ch == '\u{001b}' {
-            // Это начало ANSI escape кода
-            chars.next(); // пропускаем '['
-            // Пропускаем всё до первой буквы
-            while let Some(&next_ch) = chars.peek() {
-                chars.next();
-                if next_ch.is_alphabetic() {
-                    break;
-                }
-            }
-        } else {
-            result.push(ch);
-        }
-    }
-
-    result
-}
 
 pub struct FileError {
     pub error: AamError,
@@ -47,10 +24,12 @@ impl FileError {
         let (line, column) = Self::extract_position(&err);
         let code = Self::extract_code(&err);
         let title = Self::extract_title(&err);
-        // Очищаем ANSI коды из сообщений об ошибках
+        // Strip ANSI codes from error messages
         let short_msg = strip_ansi_codes(&err.short_message());
-        let fix_hint = strip_ansi_codes(&err
-            .diagnostics().map_or_else(|| Self::default_help_for_error(&err).to_string(), |d| d.fix.clone()));
+        let fix_hint = strip_ansi_codes(&err.diagnostics().map_or_else(
+            || Self::default_help_for_error(&err).to_string(),
+            |d| d.fix.clone(),
+        ));
 
         Self {
             error: err,
@@ -156,25 +135,17 @@ pub struct FileTab<'a> {
     pub error_count: usize,
     pub errors: Vec<AamError>,
     pub file_errors: Vec<FileError>,
-    pub error_lines: std::collections::HashSet<usize>, // Линии с ошибками
+    pub error_lines: std::collections::HashSet<usize>, // Lines with errors
 }
 
 impl<'a> FileTab<'a> {
-    #[must_use] 
+    #[must_use]
     pub fn new(path: PathBuf, content: String) -> Self {
         let mut textarea = TextArea::default();
         for line in content.lines() {
             textarea.insert_str(line);
             textarea.insert_newline();
         }
-
-        // Improved AAM syntax highlighting hack: Matches Keys, Directives (@), and comments (#)
-        let _ = textarea.set_search_pattern(r"(?m)^(?:[\w\.\-]+)\s*(?==)|#.*$|@\w+");
-        textarea.set_search_style(
-            Style::default()
-                .fg(Color::Yellow)
-                .add_modifier(Modifier::BOLD),
-        );
 
         let mut tab = Self {
             path,
@@ -203,15 +174,74 @@ impl<'a> FileTab<'a> {
             Err(errors) => {
                 self.valid = false;
                 self.error_count = errors.len();
-                // Convert errors в FileError и сохраняем их
+                // Convert errors to FileError and store them
                 self.file_errors = errors.into_iter().map(FileError::from_error).collect();
-                // Обновляем множество линий с ошибками
+                // Update the set of error line numbers
                 self.error_lines = self.file_errors.iter().map(|e| e.line).collect();
-                // Очищаем старые ошибки (они теперь в file_errors)
+                // Clear old errors (they are now in file_errors)
                 self.errors.clear();
             }
         }
         self.content = content;
+        self.apply_syntax_highlighting();
+    }
+
+    pub fn apply_syntax_highlighting(&mut self) {
+        self.textarea.clear_custom_highlight();
+
+        let lines: Vec<String> = self.textarea.lines().to_vec();
+
+        for (row, line_str) in lines.iter().enumerate() {
+            if self.error_lines.contains(&(row + 1)) {
+                self.textarea.custom_highlight(
+                    ((row, 0), (row, line_str.len())),
+                    Style::default().fg(Color::Red),
+                    10,
+                );
+                continue;
+            }
+
+            if let Some(comment_idx) = line_str.find('#') {
+                if comment_idx > 0 {
+                    let before = &line_str[..comment_idx];
+                    Self::highlight_aam_line_custom(&mut self.textarea, row, before);
+                }
+                self.textarea.custom_highlight(
+                    ((row, comment_idx), (row, line_str.len())),
+                    Style::default()
+                        .fg(Color::DarkGray)
+                        .add_modifier(Modifier::ITALIC),
+                    1,
+                );
+            } else {
+                Self::highlight_aam_line_custom(&mut self.textarea, row, line_str);
+            }
+        }
+    }
+
+    fn highlight_aam_line_custom(textarea: &mut TextArea, row: usize, code: &str) {
+        if let Some(eq_idx) = code.find('=') {
+            textarea.custom_highlight(
+                ((row, 0), (row, eq_idx)),
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+                1,
+            );
+            textarea.custom_highlight(
+                ((row, eq_idx + 1), (row, code.len())),
+                Style::default().fg(Color::Green),
+                1,
+            );
+        } else if let Some(dir_idx) = code.find('@') {
+            textarea.custom_highlight(
+                ((row, dir_idx), (row, code.len())),
+                Style::default()
+                    .fg(Color::Magenta)
+                    .add_modifier(Modifier::BOLD),
+                1,
+            );
+        }
     }
 
     // Helper for beautiful syntax highlighting of read-only/inactive tabs

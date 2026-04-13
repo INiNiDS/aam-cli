@@ -27,7 +27,7 @@ pub struct PluginManager {
 }
 
 impl PluginManager {
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self {
             plugins: Vec::new(),

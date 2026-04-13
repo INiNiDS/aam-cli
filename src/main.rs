@@ -5,6 +5,7 @@
 
 pub mod lsp;
 pub mod tui;
+pub mod utils;
 
 use aam_rs::aam::AAM;
 use aam_rs::pipeline::FormattingOptions;
@@ -12,30 +13,9 @@ use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::PathBuf;
+use utils::strip_ansi_codes;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
-
-// HIGH COMPLEXITY
-fn strip_ansi_codes(s: &str) -> String {
-    let mut result = String::new();
-    let mut chars = s.chars().peekable();
-
-    while let Some(ch) = chars.next() {
-        if ch == '\u{001b}' {
-            chars.next();
-            while let Some(&next_ch) = chars.peek() {
-                chars.next();
-                if next_ch.is_alphabetic() {
-                    break;
-                }
-            }
-        } else {
-            result.push(ch);
-        }
-    }
-
-    result
-}
 
 #[derive(Parser)]
 #[command(name = "aam")]

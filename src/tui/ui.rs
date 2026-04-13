@@ -7,6 +7,7 @@
 #![allow(clippy::cast_possible_wrap)]
 
 use crate::tui::{App, FocusArea, KNOWN_COMMANDS, VERSION, ViewMode};
+use crate::utils::strip_ansi_codes;
 use ratatui::{
     Frame,
     layout::{Constraint, Direction, Layout, Rect},
@@ -23,30 +24,6 @@ fn build_editor_block(file: &crate::tui::editor::FileTab) -> String {
         .and_then(|n| n.to_str())
         .unwrap_or("new file");
     format!(" {filename} ({file_valid_status}) ")
-}
-
-// Функция для удаления ANSI escape кодов
-fn strip_ansi_codes(s: &str) -> String {
-    let mut result = String::new();
-    let mut chars = s.chars().peekable();
-
-    while let Some(ch) = chars.next() {
-        if ch == '\u{001b}' {
-            // Это начало ANSI escape кода
-            chars.next(); // пропускаем '['
-            // Пропускаем всё до первой буквы
-            while let Some(&next_ch) = chars.peek() {
-                chars.next();
-                if next_ch.is_alphabetic() {
-                    break;
-                }
-            }
-        } else {
-            result.push(ch);
-        }
-    }
-
-    result
 }
 
 fn render_split_view(f: &mut Frame, app: &mut App, area: Rect) {
@@ -81,31 +58,10 @@ fn render_split_view(f: &mut Frame, app: &mut App, area: Rect) {
             ta.set_cursor_line_style(Style::default());
             ta.set_cursor_style(Style::default().fg(Color::DarkGray).bg(Color::Reset));
             ta.set_style(Style::default().fg(Color::DarkGray));
+            ta.clear_custom_highlight();
         }
 
-        // Рендеризуем с подсветкой ошибок
-        render_textarea_with_errors(f, &ta, file_chunks[i], file);
-    }
-}
-
-fn render_textarea_with_errors(f: &mut Frame, ta: &tui_textarea::TextArea, area: Rect, file: &crate::tui::editor::FileTab) {
-    // Для теперь мы используем встроенную подсветку та, но добавим красный фон для строк с ошибками
-    f.render_widget(ta, area);
-
-    // Добавляем красный индикатор для строк с ошибками
-    for line_num in &file.error_lines {
-        let line_y = *line_num as u16;
-        if line_y >= area.y && line_y < area.y + area.height {
-            // Рисуем красный маркер слева от строки ошибки
-            let marker = Paragraph::new("●")
-                .style(Style::default().fg(Color::Red));
-            f.render_widget(marker, Rect {
-                x: area.x,
-                y: area.y + (line_y - area.y),
-                width: 1,
-                height: 1,
-            });
-        }
+        f.render_widget(&ta, file_chunks[i]);
     }
 }
 
@@ -155,8 +111,9 @@ fn render_tabbed_view(f: &mut Frame, app: &mut App, area: Rect) {
             ta.set_cursor_line_style(Style::default());
             ta.set_cursor_style(Style::default().fg(Color::DarkGray).bg(Color::Reset));
             ta.set_style(Style::default().fg(Color::DarkGray));
+            ta.clear_custom_highlight();
         }
-        render_textarea_with_errors(f, &ta, chunks[1], file);
+        f.render_widget(&ta, chunks[1]);
     }
 }
 
@@ -189,11 +146,14 @@ fn render_editor_area(f: &mut Frame, app: &mut App, inner_editor_area: Rect) {
     }
 }
 
-fn build_diag_lines_for_error(file_err: &crate::tui::editor::FileError, file_path: &std::path::Path) -> Vec<Line<'static>> {
+fn build_diag_lines_for_error(
+    file_err: &crate::tui::editor::FileError,
+    file_path: &std::path::Path,
+) -> Vec<Line<'static>> {
     let line_num_str = format!("{}:{} ", file_err.line, file_err.column);
     let error_code_str = format!("[{}] ", file_err.code);
     let path_str = file_path.display().to_string();
-    // Очищаем ANSI коды из сообщений об ошибках
+    // Strip ANSI codes from error messages
     let short_msg = strip_ansi_codes(&file_err.short_msg);
     let fix_hint = strip_ansi_codes(&file_err.fix_hint);
     let title = file_err.title.to_string();
@@ -225,10 +185,7 @@ fn build_diag_lines_for_error(file_err: &crate::tui::editor::FileError, file_pat
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(
-                path_str,
-                Style::default().fg(Color::White),
-            ),
+            Span::styled(path_str, Style::default().fg(Color::White)),
             Span::styled(
                 line_num_str,
                 Style::default()
@@ -310,6 +267,7 @@ fn render_status_bar(f: &mut Frame, app: &App, area: Rect) {
         .alignment(ratatui::layout::Alignment::Right);
     f.render_widget(status_paragraph, area);
 }
+// HIGH COMPLEXITY
 fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
     let text_color = if is_focused {
         Color::White
@@ -317,8 +275,8 @@ fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
         Color::DarkGray
     };
 
-    // Получаем hint для автодополнения
-    let hint_str: String = if app.input_line.starts_with("open") || app.input_line.starts_with("o ") {
+    let hint_str: String = if app.input_line.starts_with("open") || app.input_line.starts_with("o ")
+    {
         let input_after_open = if app.input_line.starts_with("open ") {
             &app.input_line[5..]
         } else if app.input_line.starts_with("o ") {
@@ -327,7 +285,6 @@ fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
             ""
         };
 
-        // Получаем первое автодополнение для пути
         crate::tui::get_path_completions(input_after_open)
             .first()
             .and_then(|c| c.strip_prefix(input_after_open))
@@ -356,7 +313,10 @@ fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
         return input_spans;
     }
 
-    input_spans.push(Span::styled(app.input_line.clone(), Style::default().fg(text_color)));
+    input_spans.push(Span::styled(
+        app.input_line.clone(),
+        Style::default().fg(text_color),
+    ));
     if !hint_str.is_empty() {
         input_spans.push(Span::styled(
             hint_str,
@@ -455,7 +415,13 @@ struct BorderRenderer {
 }
 
 impl BorderRenderer {
-    fn new(head: usize, total_perimeter: usize, tail_len: usize, bg_color: Color, show_animations: bool) -> Self {
+    fn new(
+        head: usize,
+        total_perimeter: usize,
+        tail_len: usize,
+        bg_color: Color,
+        show_animations: bool,
+    ) -> Self {
         Self {
             head,
             total_perimeter,
@@ -475,7 +441,8 @@ impl BorderRenderer {
     }
 
     fn is_snake_active(&self, pos: usize) -> bool {
-        self.show_animations && get_snake_color(self.head, pos, self.total_perimeter, self.tail_len).is_some()
+        self.show_animations
+            && get_snake_color(self.head, pos, self.total_perimeter, self.tail_len).is_some()
     }
 }
 fn top_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static str {
@@ -522,7 +489,15 @@ fn animated_logo_color(renderer: &BorderRenderer, pos: usize) -> Color {
     .unwrap_or(Color::Rgb(50, 50, 50))
 }
 
-fn render_top_border(f: &mut Frame, area: &Rect, width: usize, renderer: &BorderRenderer, a1_pos: usize, a2_pos: usize, m_pos: usize) {
+fn render_top_border(
+    f: &mut Frame,
+    area: &Rect,
+    width: usize,
+    renderer: &BorderRenderer,
+    a1_pos: usize,
+    a2_pos: usize,
+    m_pos: usize,
+) {
     let mut top_spans = Vec::new();
 
     for i in 0..width {
@@ -553,7 +528,13 @@ fn render_top_border(f: &mut Frame, area: &Rect, width: usize, renderer: &Border
     );
 }
 
-fn render_right_border(f: &mut Frame, area: &Rect, height: usize, base_pos: usize, renderer: &BorderRenderer) {
+fn render_right_border(
+    f: &mut Frame,
+    area: &Rect,
+    height: usize,
+    base_pos: usize,
+    renderer: &BorderRenderer,
+) {
     for i in 0..height.saturating_sub(2) {
         let pos = base_pos + i;
         let color = renderer.get_color(pos);
@@ -585,7 +566,13 @@ fn bottom_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static
     }
 }
 
-fn render_bottom_border(f: &mut Frame, area: &Rect, width: usize, base_pos: usize, renderer: &BorderRenderer) {
+fn render_bottom_border(
+    f: &mut Frame,
+    area: &Rect,
+    width: usize,
+    base_pos: usize,
+    renderer: &BorderRenderer,
+) {
     let mut bottom_spans = Vec::new();
     let brand_text = format!(" INiNiDS v{VERSION} ");
     let brand_len = brand_text.chars().count();
@@ -626,7 +613,13 @@ fn render_bottom_border(f: &mut Frame, area: &Rect, width: usize, base_pos: usiz
     );
 }
 
-fn render_left_border(f: &mut Frame, area: &Rect, height: usize, base_pos: usize, renderer: &BorderRenderer) {
+fn render_left_border(
+    f: &mut Frame,
+    area: &Rect,
+    height: usize,
+    base_pos: usize,
+    renderer: &BorderRenderer,
+) {
     for i in 0..height.saturating_sub(2) {
         let pos = base_pos + i;
         let color = renderer.get_color(pos);
@@ -647,7 +640,12 @@ fn render_left_border(f: &mut Frame, area: &Rect, height: usize, base_pos: usize
     }
 }
 
-fn get_snake_color(head: usize, pos: usize, total_perimeter: usize, tail_len: usize) -> Option<Color> {
+fn get_snake_color(
+    head: usize,
+    pos: usize,
+    total_perimeter: usize,
+    tail_len: usize,
+) -> Option<Color> {
     let dist = if head >= pos {
         head - pos
     } else {
@@ -695,7 +693,13 @@ pub fn render_perimeter_animated_bar(f: &mut Frame, area: Rect, app: &App) {
     render_top_border(f, &area, width, &renderer, a1_pos, a2_pos, m_pos);
     render_right_border(f, &area, height, width, &renderer);
     render_bottom_border(f, &area, width, width + height.saturating_sub(2), &renderer);
-    render_left_border(f, &area, height, width * 2 + height.saturating_sub(2) - 2, &renderer);
+    render_left_border(
+        f,
+        &area,
+        height,
+        width * 2 + height.saturating_sub(2) - 2,
+        &renderer,
+    );
 }
 
 pub fn render_help_popup(f: &mut Frame) {
