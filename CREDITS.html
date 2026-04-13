@@ -1,64 +1,216 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Third Party Licenses</title>
     <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --accent-color: #e55325;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --tag-bg: rgba(0, 0, 0, 0.04);
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            --radius-lg: 12px;
+            --radius-sm: 6px;
+        }
+
         @media (prefers-color-scheme: dark) {
-            body {
-                background: #333;
-                color: white;
-            }
-            a {
-                color: skyblue;
+            :root {
+                --bg-color: #0d1117;
+                --text-color: #c9d1d9;
+                --card-bg: #161b22;
+                --accent-color: #ff7b52;
+                --border-color: rgba(255, 255, 255, 0.1);
+                --tag-bg: rgba(255, 255, 255, 0.05);
             }
         }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem 1rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
         .container {
-            font-family: sans-serif;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
         .intro {
             text-align: center;
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
         }
+
+        .intro h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .intro p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .licenses-overview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 0;
+            list-style: none;
+            margin-bottom: 3rem;
+        }
+
+        .licenses-overview li {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease;
+        }
+
+        .licenses-overview li:hover {
+            transform: translateY(-2px);
+        }
+
         .licenses-list {
             list-style-type: none;
             margin: 0;
             padding: 0;
         }
-        .license-used-by {
-            margin-top: -10px;
+
+        .license {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
         }
+
+        .license h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+        }
+
+        .license h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .license-used-by {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0;
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .license-used-by li {
+            background: var(--tag-bg);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
         .license-text {
-            max-height: 200px;
-            overflow-y: scroll;
+            background: var(--tag-bg);
+            padding: 1.5rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono), jetbrains-mono;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            max-height: 250px;
+            overflow-y: auto;
             white-space: pre-wrap;
+            margin: 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .license-text::-webkit-scrollbar {
+            width: 8px;
+        }
+        .license-text::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .license-text::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        .license-text::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
         }
     </style>
 </head>
 
 <body>
-    <main class="container">
-        <div class="intro">
-            <h1>Third Party Licenses</h1>
-            <p>This page lists the licenses of the projects used in cargo-about.</p>
-        </div>
-    
-        <h2>Overview of licenses:</h2>
-        <ul class="licenses-overview">
+<main class="container">
+    <div class="intro">
+        <h1>Third Party Licenses</h1>
+        <p>This page lists the licenses of the projects used in cargo-about.</p>
+    </div>
+
+    <h2>Overview of licenses</h2>
+    <ul class="licenses-overview">
             <li><a href="#Apache-2.0">Apache License 2.0</a> (113)</li>
             <li><a href="#MIT">MIT License</a> (50)</li>
             <li><a href="#Unicode-3.0">Unicode License v3</a> (19)</li>
             <li><a href="#GPL-3.0-or-later">GNU General Public License v3.0 or later</a> (1)</li>
             <li><a href="#MPL-2.0">Mozilla Public License 2.0</a> (1)</li>
             <li><a href="#Zlib">zlib License</a> (1)</li>
-        </ul>
+    </ul>
 
-        <h2>All license text:</h2>
-        <ul class="licenses-list">
+    <h2>All license text</h2>
+    <ul class="licenses-list">
             <li class="license">
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/jhpratt/num_threads ">num_threads 0.1.7</a></li>
+                        <li>
+                            <a href="https://github.com/jhpratt/num_threads" target="_blank" rel="noopener noreferrer">
+                                num_threads 0.1.7
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">
                                  Apache License
@@ -268,7 +420,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/jhpratt/powerfmt ">powerfmt 0.2.0</a></li>
+                        <li>
+                            <a href="https://github.com/jhpratt/powerfmt" target="_blank" rel="noopener noreferrer">
+                                powerfmt 0.2.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">
                                  Apache License
@@ -478,7 +634,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/jhpratt/deranged ">deranged 0.5.8</a></li>
+                        <li>
+                            <a href="https://github.com/jhpratt/deranged" target="_blank" rel="noopener noreferrer">
+                                deranged 0.5.8
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">
                                  Apache License
@@ -688,9 +848,21 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/nvzqz/static-assertions-rs ">static_assertions 1.1.0</a></li>
-                    <li><a href=" https://github.com/Lokathor/tinyvec ">tinyvec 1.11.0</a></li>
-                    <li><a href=" https://github.com/hsivonen/utf8_iter ">utf8_iter 1.0.4</a></li>
+                        <li>
+                            <a href="https://github.com/nvzqz/static-assertions-rs" target="_blank" rel="noopener noreferrer">
+                                static_assertions 1.1.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Lokathor/tinyvec" target="_blank" rel="noopener noreferrer">
+                                tinyvec 1.11.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/hsivonen/utf8_iter" target="_blank" rel="noopener noreferrer">
+                                utf8_iter 1.0.4
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">
                                  Apache License
@@ -900,8 +1072,16 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/microsoft/windows-rs ">windows-link 0.2.1</a></li>
-                    <li><a href=" https://github.com/microsoft/windows-rs ">windows-sys 0.61.2</a></li>
+                        <li>
+                            <a href="https://github.com/microsoft/windows-rs" target="_blank" rel="noopener noreferrer">
+                                windows-link 0.2.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/microsoft/windows-rs" target="_blank" rel="noopener noreferrer">
+                                windows-sys 0.61.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                                 Apache License
                            Version 2.0, January 2004
@@ -1110,7 +1290,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/Soveu/tinyvec_macros ">tinyvec_macros 0.1.1</a></li>
+                        <li>
+                            <a href="https://github.com/Soveu/tinyvec_macros" target="_blank" rel="noopener noreferrer">
+                                tinyvec_macros 0.1.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                                 Apache License
                            Version 2.0, January 2004
@@ -1320,7 +1504,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/ratatui/line-clipping ">line-clipping 0.3.7</a></li>
+                        <li>
+                            <a href="https://github.com/ratatui/line-clipping" target="_blank" rel="noopener noreferrer">
+                                line-clipping 0.3.7
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                                 Apache License
                            Version 2.0, January 2004
@@ -1529,7 +1717,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/ratatui/kasuari ">kasuari 0.4.12</a></li>
+                        <li>
+                            <a href="https://github.com/ratatui/kasuari" target="_blank" rel="noopener noreferrer">
+                                kasuari 0.4.12
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                                 Apache License
                            Version 2.0, January 2004
@@ -1738,7 +1930,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/retep998/winapi-rs ">winapi 0.3.9</a></li>
+                        <li>
+                            <a href="https://github.com/retep998/winapi-rs" target="_blank" rel="noopener noreferrer">
+                                winapi 0.3.9
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                                 Apache License
                            Version 2.0, January 2004
@@ -1947,18 +2143,66 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rust-cli/anstyle.git ">anstream 1.0.0</a></li>
-                    <li><a href=" https://github.com/rust-cli/anstyle.git ">anstyle-parse 1.0.0</a></li>
-                    <li><a href=" https://github.com/rust-cli/anstyle.git ">anstyle-query 1.1.5</a></li>
-                    <li><a href=" https://github.com/rust-cli/anstyle.git ">anstyle-wincon 3.0.11</a></li>
-                    <li><a href=" https://github.com/rust-cli/anstyle.git ">anstyle 1.0.14</a></li>
-                    <li><a href=" https://github.com/clap-rs/clap ">clap 4.6.0</a></li>
-                    <li><a href=" https://github.com/clap-rs/clap ">clap_builder 4.6.0</a></li>
-                    <li><a href=" https://github.com/clap-rs/clap ">clap_derive 4.6.0</a></li>
-                    <li><a href=" https://github.com/clap-rs/clap ">clap_lex 1.1.0</a></li>
-                    <li><a href=" https://github.com/rust-cli/anstyle.git ">colorchoice 1.0.5</a></li>
-                    <li><a href=" https://github.com/polyfill-rs/is_terminal_polyfill ">is_terminal_polyfill 1.70.2</a></li>
-                    <li><a href=" https://github.com/polyfill-rs/once_cell_polyfill ">once_cell_polyfill 1.70.2</a></li>
+                        <li>
+                            <a href="https://github.com/rust-cli/anstyle.git" target="_blank" rel="noopener noreferrer">
+                                anstream 1.0.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-cli/anstyle.git" target="_blank" rel="noopener noreferrer">
+                                anstyle-parse 1.0.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-cli/anstyle.git" target="_blank" rel="noopener noreferrer">
+                                anstyle-query 1.1.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-cli/anstyle.git" target="_blank" rel="noopener noreferrer">
+                                anstyle-wincon 3.0.11
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-cli/anstyle.git" target="_blank" rel="noopener noreferrer">
+                                anstyle 1.0.14
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/clap-rs/clap" target="_blank" rel="noopener noreferrer">
+                                clap 4.6.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/clap-rs/clap" target="_blank" rel="noopener noreferrer">
+                                clap_builder 4.6.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/clap-rs/clap" target="_blank" rel="noopener noreferrer">
+                                clap_derive 4.6.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/clap-rs/clap" target="_blank" rel="noopener noreferrer">
+                                clap_lex 1.1.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-cli/anstyle.git" target="_blank" rel="noopener noreferrer">
+                                colorchoice 1.0.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/polyfill-rs/is_terminal_polyfill" target="_blank" rel="noopener noreferrer">
+                                is_terminal_polyfill 1.70.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/polyfill-rs/once_cell_polyfill" target="_blank" rel="noopener noreferrer">
+                                once_cell_polyfill 1.70.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                                 Apache License
                            Version 2.0, January 2004
@@ -2168,7 +2412,11 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/INiNiDS/aam-rs/ ">aam-rs 2.0.3</a></li>
+                        <li>
+                            <a href="https://github.com/INiNiDS/aam-rs/" target="_blank" rel="noopener noreferrer">
+                                aam-rs 2.0.3
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                              Apache License
                            Version 2.0, January 2004
@@ -2377,14 +2625,46 @@
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-channel 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-core 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-io 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-macro 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-sink 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-task 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures-util 0.3.32</a></li>
-                    <li><a href=" https://github.com/rust-lang/futures-rs ">futures 0.3.32</a></li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-channel 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-core 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-io 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-macro 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-sink 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-task 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures-util 0.3.32
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/futures-rs" target="_blank" rel="noopener noreferrer">
+                                futures 0.3.32
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                              Apache License
                         Version 2.0, January 2004
@@ -2594,7 +2874,11 @@ limitations under the License.
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/RazrFalcon/memmap2-rs ">memmap2 0.9.10</a></li>
+                        <li>
+                            <a href="https://github.com/RazrFalcon/memmap2-rs" target="_blank" rel="noopener noreferrer">
+                                memmap2 0.9.10
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                              Apache License
                         Version 2.0, January 2004
@@ -2803,48 +3087,216 @@ limitations under the License.
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/bitflags/bitflags ">bitflags 1.3.2</a></li>
-                    <li><a href=" https://github.com/bitflags/bitflags ">bitflags 2.11.0</a></li>
-                    <li><a href=" https://github.com/fitzgen/bumpalo ">bumpalo 3.20.2</a></li>
-                    <li><a href=" https://github.com/rust-lang/cfg-if ">cfg-if 1.0.4</a></li>
-                    <li><a href=" https://github.com/yaahc/displaydoc ">displaydoc 0.2.5</a></li>
-                    <li><a href=" https://github.com/rayon-rs/either ">either 1.15.0</a></li>
-                    <li><a href=" https://github.com/indexmap-rs/equivalent ">equivalent 1.0.2</a></li>
-                    <li><a href=" https://github.com/lambda-fairy/rust-errno ">errno 0.3.14</a></li>
-                    <li><a href=" https://github.com/servo/rust-url ">form_urlencoded 1.2.2</a></li>
-                    <li><a href=" https://github.com/rust-lang/hashbrown ">hashbrown 0.14.5</a></li>
-                    <li><a href=" https://github.com/rust-lang/hashbrown ">hashbrown 0.16.1</a></li>
-                    <li><a href=" https://github.com/withoutboats/heck ">heck 0.5.0</a></li>
-                    <li><a href=" https://github.com/seanmonstar/httparse ">httparse 1.10.1</a></li>
-                    <li><a href=" https://github.com/servo/rust-url/ ">idna 1.1.0</a></li>
-                    <li><a href=" https://github.com/hsivonen/idna_adapter ">idna_adapter 1.2.1</a></li>
-                    <li><a href=" https://github.com/rust-itertools/itertools ">itertools 0.14.0</a></li>
-                    <li><a href=" https://github.com/sunfishcode/linux-raw-sys ">linux-raw-sys 0.12.1</a></li>
-                    <li><a href=" https://github.com/Amanieu/parking_lot ">lock_api 0.4.14</a></li>
-                    <li><a href=" https://github.com/rust-lang/log ">log 0.4.29</a></li>
-                    <li><a href=" https://github.com/matklad/once_cell ">once_cell 1.21.4</a></li>
-                    <li><a href=" https://github.com/Amanieu/parking_lot ">parking_lot 0.12.5</a></li>
-                    <li><a href=" https://github.com/Amanieu/parking_lot ">parking_lot_core 0.9.12</a></li>
-                    <li><a href=" https://github.com/servo/rust-url/ ">percent-encoding 2.3.2</a></li>
-                    <li><a href=" https://github.com/rust-lang/regex ">regex-automata 0.4.14</a></li>
-                    <li><a href=" https://github.com/rust-lang/regex ">regex-syntax 0.8.10</a></li>
-                    <li><a href=" https://github.com/rust-lang/regex ">regex 1.12.3</a></li>
-                    <li><a href=" https://github.com/djc/rustc-version-rs ">rustc_version 0.4.1</a></li>
-                    <li><a href=" https://github.com/bytecodealliance/rustix ">rustix 1.1.4</a></li>
-                    <li><a href=" https://github.com/bluss/scopeguard ">scopeguard 1.2.0</a></li>
-                    <li><a href=" https://github.com/vorner/signal-hook ">signal-hook-mio 0.2.5</a></li>
-                    <li><a href=" https://github.com/vorner/signal-hook ">signal-hook-registry 1.4.8</a></li>
-                    <li><a href=" https://github.com/vorner/signal-hook ">signal-hook 0.3.18</a></li>
-                    <li><a href=" https://github.com/servo/rust-smallvec ">smallvec 1.15.1</a></li>
-                    <li><a href=" https://github.com/rust-lang/rust-analyzer/tree/master/lib/smol_str ">smol_str 0.3.6</a></li>
-                    <li><a href=" https://github.com/rust-lang/socket2 ">socket2 0.6.3</a></li>
-                    <li><a href=" https://github.com/storyyeller/stable_deref_trait ">stable_deref_trait 1.2.1</a></li>
-                    <li><a href=" https://github.com/ebkalderon/tower-lsp ">tower-lsp 0.20.0</a></li>
-                    <li><a href=" https://github.com/unicode-rs/unicode-segmentation ">unicode-segmentation 1.13.2</a></li>
-                    <li><a href=" https://github.com/Aetf/unicode-truncate ">unicode-truncate 2.0.1</a></li>
-                    <li><a href=" https://github.com/unicode-rs/unicode-width ">unicode-width 0.2.2</a></li>
-                    <li><a href=" https://github.com/servo/rust-url ">url 2.5.8</a></li>
-                    <li><a href=" https://github.com/bytecodealliance/wasi ">wasi 0.11.1+wasi-snapshot-preview1</a></li>
+                        <li>
+                            <a href="https://github.com/bitflags/bitflags" target="_blank" rel="noopener noreferrer">
+                                bitflags 1.3.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/bitflags/bitflags" target="_blank" rel="noopener noreferrer">
+                                bitflags 2.11.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/fitzgen/bumpalo" target="_blank" rel="noopener noreferrer">
+                                bumpalo 3.20.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/cfg-if" target="_blank" rel="noopener noreferrer">
+                                cfg-if 1.0.4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/yaahc/displaydoc" target="_blank" rel="noopener noreferrer">
+                                displaydoc 0.2.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rayon-rs/either" target="_blank" rel="noopener noreferrer">
+                                either 1.15.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/indexmap-rs/equivalent" target="_blank" rel="noopener noreferrer">
+                                equivalent 1.0.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/lambda-fairy/rust-errno" target="_blank" rel="noopener noreferrer">
+                                errno 0.3.14
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/servo/rust-url" target="_blank" rel="noopener noreferrer">
+                                form_urlencoded 1.2.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/hashbrown" target="_blank" rel="noopener noreferrer">
+                                hashbrown 0.14.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/hashbrown" target="_blank" rel="noopener noreferrer">
+                                hashbrown 0.16.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/withoutboats/heck" target="_blank" rel="noopener noreferrer">
+                                heck 0.5.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/seanmonstar/httparse" target="_blank" rel="noopener noreferrer">
+                                httparse 1.10.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/servo/rust-url/" target="_blank" rel="noopener noreferrer">
+                                idna 1.1.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/hsivonen/idna_adapter" target="_blank" rel="noopener noreferrer">
+                                idna_adapter 1.2.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-itertools/itertools" target="_blank" rel="noopener noreferrer">
+                                itertools 0.14.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/sunfishcode/linux-raw-sys" target="_blank" rel="noopener noreferrer">
+                                linux-raw-sys 0.12.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Amanieu/parking_lot" target="_blank" rel="noopener noreferrer">
+                                lock_api 0.4.14
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/log" target="_blank" rel="noopener noreferrer">
+                                log 0.4.29
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/matklad/once_cell" target="_blank" rel="noopener noreferrer">
+                                once_cell 1.21.4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Amanieu/parking_lot" target="_blank" rel="noopener noreferrer">
+                                parking_lot 0.12.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Amanieu/parking_lot" target="_blank" rel="noopener noreferrer">
+                                parking_lot_core 0.9.12
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/servo/rust-url/" target="_blank" rel="noopener noreferrer">
+                                percent-encoding 2.3.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/regex" target="_blank" rel="noopener noreferrer">
+                                regex-automata 0.4.14
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/regex" target="_blank" rel="noopener noreferrer">
+                                regex-syntax 0.8.10
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/regex" target="_blank" rel="noopener noreferrer">
+                                regex 1.12.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/djc/rustc-version-rs" target="_blank" rel="noopener noreferrer">
+                                rustc_version 0.4.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/bytecodealliance/rustix" target="_blank" rel="noopener noreferrer">
+                                rustix 1.1.4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/bluss/scopeguard" target="_blank" rel="noopener noreferrer">
+                                scopeguard 1.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/vorner/signal-hook" target="_blank" rel="noopener noreferrer">
+                                signal-hook-mio 0.2.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/vorner/signal-hook" target="_blank" rel="noopener noreferrer">
+                                signal-hook-registry 1.4.8
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/vorner/signal-hook" target="_blank" rel="noopener noreferrer">
+                                signal-hook 0.3.18
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/servo/rust-smallvec" target="_blank" rel="noopener noreferrer">
+                                smallvec 1.15.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/rust-analyzer/tree/master/lib/smol_str" target="_blank" rel="noopener noreferrer">
+                                smol_str 0.3.6
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/socket2" target="_blank" rel="noopener noreferrer">
+                                socket2 0.6.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/storyyeller/stable_deref_trait" target="_blank" rel="noopener noreferrer">
+                                stable_deref_trait 1.2.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/ebkalderon/tower-lsp" target="_blank" rel="noopener noreferrer">
+                                tower-lsp 0.20.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-rs/unicode-segmentation" target="_blank" rel="noopener noreferrer">
+                                unicode-segmentation 1.13.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Aetf/unicode-truncate" target="_blank" rel="noopener noreferrer">
+                                unicode-truncate 2.0.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-rs/unicode-width" target="_blank" rel="noopener noreferrer">
+                                unicode-width 0.2.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/servo/rust-url" target="_blank" rel="noopener noreferrer">
+                                url 2.5.8
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/bytecodealliance/wasi" target="_blank" rel="noopener noreferrer">
+                                wasi 0.11.1+wasi-snapshot-preview1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                              Apache License
                         Version 2.0, January 2004
@@ -3053,7 +3505,11 @@ limitations under the License.
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/auto-impl-rs/auto_impl/ ">auto_impl 1.3.0</a></li>
+                        <li>
+                            <a href="https://github.com/auto-impl-rs/auto_impl/" target="_blank" rel="noopener noreferrer">
+                                auto_impl 1.3.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">                              Apache License
                         Version 2.0, January 2004
@@ -3262,42 +3718,186 @@ limitations under the License.
                 <h3 id="Apache-2.0">Apache License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/zakarumych/allocator-api2 ">allocator-api2 0.2.21</a></li>
-                    <li><a href=" https://github.com/dtolnay/anyhow ">anyhow 1.0.102</a></li>
-                    <li><a href=" https://github.com/dtolnay/async-trait ">async-trait 0.1.89</a></li>
-                    <li><a href=" https://github.com/slint-ui/document-features ">document-features 0.2.12</a></li>
-                    <li><a href=" https://github.com/TedDriggs/ident_case ">ident_case 1.0.1</a></li>
-                    <li><a href=" https://github.com/dtolnay/indoc ">indoc 2.0.7</a></li>
-                    <li><a href=" https://github.com/dtolnay/itoa ">itoa 1.0.18</a></li>
-                    <li><a href=" https://github.com/rust-lang/libc ">libc 0.2.184</a></li>
-                    <li><a href=" https://github.com/LukasKalbertodt/litrs ">litrs 1.0.0</a></li>
-                    <li><a href=" https://github.com/jhpratt/num-conv ">num-conv 0.2.1</a></li>
-                    <li><a href=" https://github.com/taiki-e/pin-project ">pin-project-internal 1.1.11</a></li>
-                    <li><a href=" https://github.com/taiki-e/pin-project-lite ">pin-project-lite 0.2.17</a></li>
-                    <li><a href=" https://github.com/taiki-e/pin-project ">pin-project 1.1.11</a></li>
-                    <li><a href=" https://github.com/taiki-e/portable-atomic ">portable-atomic 1.13.1</a></li>
-                    <li><a href=" https://github.com/dtolnay/proc-macro2 ">proc-macro2 1.0.106</a></li>
-                    <li><a href=" https://github.com/dtolnay/quote ">quote 1.0.45</a></li>
-                    <li><a href=" https://github.com/rust-lang/rustc-hash ">rustc-hash 2.1.2</a></li>
-                    <li><a href=" https://github.com/dtolnay/rustversion ">rustversion 1.0.22</a></li>
-                    <li><a href=" https://github.com/dtolnay/ryu ">ryu 1.0.23</a></li>
-                    <li><a href=" https://github.com/dtolnay/semver ">semver 1.0.28</a></li>
-                    <li><a href=" https://github.com/serde-rs/serde ">serde 1.0.228</a></li>
-                    <li><a href=" https://github.com/serde-rs/serde ">serde_core 1.0.228</a></li>
-                    <li><a href=" https://github.com/serde-rs/serde ">serde_derive 1.0.228</a></li>
-                    <li><a href=" https://github.com/serde-rs/json ">serde_json 1.0.149</a></li>
-                    <li><a href=" https://github.com/dtolnay/serde-repr ">serde_repr 0.1.20</a></li>
-                    <li><a href=" https://github.com/rusticstuff/simdutf8 ">simdutf8 0.1.5</a></li>
-                    <li><a href=" https://github.com/dtolnay/syn ">syn 2.0.117</a></li>
-                    <li><a href=" https://github.com/dtolnay/thiserror ">thiserror-impl 2.0.18</a></li>
-                    <li><a href=" https://github.com/dtolnay/thiserror ">thiserror 2.0.18</a></li>
-                    <li><a href=" https://github.com/time-rs/time ">time-core 0.1.8</a></li>
-                    <li><a href=" https://github.com/time-rs/time ">time 0.3.47</a></li>
-                    <li><a href=" https://github.com/ebkalderon/tower-lsp ">tower-lsp-macros 0.9.0</a></li>
-                    <li><a href=" https://github.com/dtolnay/unicode-ident ">unicode-ident 1.0.24</a></li>
-                    <li><a href=" https://github.com/alacritty/vte ">utf8parse 0.2.2</a></li>
-                    <li><a href=" https://github.com/retep998/winapi-rs ">winapi-i686-pc-windows-gnu 0.4.0</a></li>
-                    <li><a href=" https://github.com/retep998/winapi-rs ">winapi-x86_64-pc-windows-gnu 0.4.0</a></li>
+                        <li>
+                            <a href="https://github.com/zakarumych/allocator-api2" target="_blank" rel="noopener noreferrer">
+                                allocator-api2 0.2.21
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/anyhow" target="_blank" rel="noopener noreferrer">
+                                anyhow 1.0.102
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/async-trait" target="_blank" rel="noopener noreferrer">
+                                async-trait 0.1.89
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/slint-ui/document-features" target="_blank" rel="noopener noreferrer">
+                                document-features 0.2.12
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TedDriggs/ident_case" target="_blank" rel="noopener noreferrer">
+                                ident_case 1.0.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/indoc" target="_blank" rel="noopener noreferrer">
+                                indoc 2.0.7
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/itoa" target="_blank" rel="noopener noreferrer">
+                                itoa 1.0.18
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/libc" target="_blank" rel="noopener noreferrer">
+                                libc 0.2.184
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/LukasKalbertodt/litrs" target="_blank" rel="noopener noreferrer">
+                                litrs 1.0.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/jhpratt/num-conv" target="_blank" rel="noopener noreferrer">
+                                num-conv 0.2.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/taiki-e/pin-project" target="_blank" rel="noopener noreferrer">
+                                pin-project-internal 1.1.11
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/taiki-e/pin-project-lite" target="_blank" rel="noopener noreferrer">
+                                pin-project-lite 0.2.17
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/taiki-e/pin-project" target="_blank" rel="noopener noreferrer">
+                                pin-project 1.1.11
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/taiki-e/portable-atomic" target="_blank" rel="noopener noreferrer">
+                                portable-atomic 1.13.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/proc-macro2" target="_blank" rel="noopener noreferrer">
+                                proc-macro2 1.0.106
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/quote" target="_blank" rel="noopener noreferrer">
+                                quote 1.0.45
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rust-lang/rustc-hash" target="_blank" rel="noopener noreferrer">
+                                rustc-hash 2.1.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/rustversion" target="_blank" rel="noopener noreferrer">
+                                rustversion 1.0.22
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/ryu" target="_blank" rel="noopener noreferrer">
+                                ryu 1.0.23
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/semver" target="_blank" rel="noopener noreferrer">
+                                semver 1.0.28
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/serde-rs/serde" target="_blank" rel="noopener noreferrer">
+                                serde 1.0.228
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/serde-rs/serde" target="_blank" rel="noopener noreferrer">
+                                serde_core 1.0.228
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/serde-rs/serde" target="_blank" rel="noopener noreferrer">
+                                serde_derive 1.0.228
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/serde-rs/json" target="_blank" rel="noopener noreferrer">
+                                serde_json 1.0.149
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/serde-repr" target="_blank" rel="noopener noreferrer">
+                                serde_repr 0.1.20
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rusticstuff/simdutf8" target="_blank" rel="noopener noreferrer">
+                                simdutf8 0.1.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/syn" target="_blank" rel="noopener noreferrer">
+                                syn 2.0.117
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/thiserror" target="_blank" rel="noopener noreferrer">
+                                thiserror-impl 2.0.18
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/thiserror" target="_blank" rel="noopener noreferrer">
+                                thiserror 2.0.18
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/time-rs/time" target="_blank" rel="noopener noreferrer">
+                                time-core 0.1.8
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/time-rs/time" target="_blank" rel="noopener noreferrer">
+                                time 0.3.47
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/ebkalderon/tower-lsp" target="_blank" rel="noopener noreferrer">
+                                tower-lsp-macros 0.9.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/dtolnay/unicode-ident" target="_blank" rel="noopener noreferrer">
+                                unicode-ident 1.0.24
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/alacritty/vte" target="_blank" rel="noopener noreferrer">
+                                utf8parse 0.2.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/retep998/winapi-rs" target="_blank" rel="noopener noreferrer">
+                                winapi-i686-pc-windows-gnu 0.4.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/retep998/winapi-rs" target="_blank" rel="noopener noreferrer">
+                                winapi-x86_64-pc-windows-gnu 0.4.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Apache License
 Version 2.0, January 2004
@@ -3378,7 +3978,11 @@ limitations under the License.
                 <h3 id="GPL-3.0-or-later">GNU General Public License v3.0 or later</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://crates.io/crates/aam ">aam 0.1.1</a></li>
+                        <li>
+                            <a href="https://crates.io/crates/aam" target="_blank" rel="noopener noreferrer">
+                                aam 0.1.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">The GNU General Public License is a free, copyleft license for software and other kinds of works.
 
@@ -3603,7 +4207,11 @@ The GNU General Public License does not permit incorporating your program into p
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/ratatui/instability ">instability 0.3.12</a></li>
+                        <li>
+                            <a href="https://github.com/ratatui/instability" target="_blank" rel="noopener noreferrer">
+                                instability 0.3.12
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text"># MIT License
 
@@ -3633,7 +4241,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tokio-rs/mio ">mio 1.2.0</a></li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/mio" target="_blank" rel="noopener noreferrer">
+                                mio 1.2.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2014 Carl Lerche and other MIO contributors
 
@@ -3660,7 +4272,11 @@ THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://gitlab.redox-os.org/redox-os/syscall ">redox_syscall 0.5.18</a></li>
+                        <li>
+                            <a href="https://gitlab.redox-os.org/redox-os/syscall" target="_blank" rel="noopener noreferrer">
+                                redox_syscall 0.5.18
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2017 Redox OS Developers
 
@@ -3690,7 +4306,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tokio-rs/bytes ">bytes 1.11.1</a></li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/bytes" target="_blank" rel="noopener noreferrer">
+                                bytes 1.11.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2018 Carl Lerche
 
@@ -3723,7 +4343,11 @@ DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tokio-rs/slab ">slab 0.4.12</a></li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/slab" target="_blank" rel="noopener noreferrer">
+                                slab 0.4.12
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2019 Carl Lerche
 
@@ -3756,9 +4380,21 @@ DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tokio-rs/tracing ">tracing-attributes 0.1.31</a></li>
-                    <li><a href=" https://github.com/tokio-rs/tracing ">tracing-core 0.1.36</a></li>
-                    <li><a href=" https://github.com/tokio-rs/tracing ">tracing 0.1.44</a></li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/tracing" target="_blank" rel="noopener noreferrer">
+                                tracing-attributes 0.1.31
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/tracing" target="_blank" rel="noopener noreferrer">
+                                tracing-core 0.1.36
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/tracing" target="_blank" rel="noopener noreferrer">
+                                tracing 0.1.44
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2019 Tokio Contributors
 
@@ -3791,9 +4427,21 @@ DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tower-rs/tower ">tower-layer 0.3.3</a></li>
-                    <li><a href=" https://github.com/tower-rs/tower ">tower-service 0.3.3</a></li>
-                    <li><a href=" https://github.com/tower-rs/tower ">tower 0.4.13</a></li>
+                        <li>
+                            <a href="https://github.com/tower-rs/tower" target="_blank" rel="noopener noreferrer">
+                                tower-layer 0.3.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tower-rs/tower" target="_blank" rel="noopener noreferrer">
+                                tower-service 0.3.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tower-rs/tower" target="_blank" rel="noopener noreferrer">
+                                tower 0.4.13
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2019 Tower Contributors
 
@@ -3826,7 +4474,11 @@ DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/ratatui/ratatui ">ratatui-macros 0.7.0</a></li>
+                        <li>
+                            <a href="https://github.com/ratatui/ratatui" target="_blank" rel="noopener noreferrer">
+                                ratatui-macros 0.7.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2024 Dheepak Krishnamurthy
 Copyright (c) 2025 The Ratatui Developers
@@ -3854,7 +4506,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/mystor/synstructure ">synstructure 0.13.2</a></li>
+                        <li>
+                            <a href="https://github.com/mystor/synstructure" target="_blank" rel="noopener noreferrer">
+                                synstructure 0.13.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright 2016 Nika Layzell
 
@@ -3869,7 +4525,11 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rkyv/bytecheck ">bytecheck_derive 0.8.2</a></li>
+                        <li>
+                            <a href="https://github.com/rkyv/bytecheck" target="_blank" rel="noopener noreferrer">
+                                bytecheck_derive 0.8.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright 2020 David Koloski
 
@@ -3884,10 +4544,26 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rkyv/ptr_meta ">ptr_meta 0.3.1</a></li>
-                    <li><a href=" https://github.com/rkyv/ptr_meta ">ptr_meta_derive 0.3.1</a></li>
-                    <li><a href=" https://github.com/djkoloski/rend ">rend 0.5.3</a></li>
-                    <li><a href=" https://github.com/rkyv/rkyv ">rkyv 0.8.15</a></li>
+                        <li>
+                            <a href="https://github.com/rkyv/ptr_meta" target="_blank" rel="noopener noreferrer">
+                                ptr_meta 0.3.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rkyv/ptr_meta" target="_blank" rel="noopener noreferrer">
+                                ptr_meta_derive 0.3.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/djkoloski/rend" target="_blank" rel="noopener noreferrer">
+                                rend 0.5.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/rkyv/rkyv" target="_blank" rel="noopener noreferrer">
+                                rkyv 0.8.15
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright 2021 David Koloski
 
@@ -3902,7 +4578,11 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rkyv/bytecheck ">bytecheck 0.8.2</a></li>
+                        <li>
+                            <a href="https://github.com/rkyv/bytecheck" target="_blank" rel="noopener noreferrer">
+                                bytecheck 0.8.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright 2023 David Koloski
 
@@ -3917,7 +4597,11 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rkyv/rancor ">rancor 0.1.1</a></li>
+                        <li>
+                            <a href="https://github.com/rkyv/rancor" target="_blank" rel="noopener noreferrer">
+                                rancor 0.1.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright 2023 David Koloski
 
@@ -3932,8 +4616,16 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/djkoloski/munge ">munge 0.4.7</a></li>
-                    <li><a href=" https://github.com/djkoloski/munge ">munge_macro 0.4.7</a></li>
+                        <li>
+                            <a href="https://github.com/djkoloski/munge" target="_blank" rel="noopener noreferrer">
+                                munge 0.4.7
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/djkoloski/munge" target="_blank" rel="noopener noreferrer">
+                                munge_macro 0.4.7
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright 2024 David Koloski
 
@@ -3948,7 +4640,11 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/jeromefroe/lru-rs.git ">lru 0.16.3</a></li>
+                        <li>
+                            <a href="https://github.com/jeromefroe/lru-rs.git" target="_blank" rel="noopener noreferrer">
+                                lru 0.16.3
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -3976,9 +4672,21 @@ SOFTWARE.</pre>
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/TedDriggs/darling ">darling 0.23.0</a></li>
-                    <li><a href=" https://github.com/TedDriggs/darling ">darling_core 0.23.0</a></li>
-                    <li><a href=" https://github.com/TedDriggs/darling ">darling_macro 0.23.0</a></li>
+                        <li>
+                            <a href="https://github.com/TedDriggs/darling" target="_blank" rel="noopener noreferrer">
+                                darling 0.23.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TedDriggs/darling" target="_blank" rel="noopener noreferrer">
+                                darling_core 0.23.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/TedDriggs/darling" target="_blank" rel="noopener noreferrer">
+                                darling_macro 0.23.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4007,7 +4715,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/xacrimon/dashmap ">dashmap 5.5.3</a></li>
+                        <li>
+                            <a href="https://github.com/xacrimon/dashmap" target="_blank" rel="noopener noreferrer">
+                                dashmap 5.5.3
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4036,8 +4748,16 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/Peternator7/strum ">strum 0.27.2</a></li>
-                    <li><a href=" https://github.com/Peternator7/strum ">strum_macros 0.27.2</a></li>
+                        <li>
+                            <a href="https://github.com/Peternator7/strum" target="_blank" rel="noopener noreferrer">
+                                strum 0.27.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Peternator7/strum" target="_blank" rel="noopener noreferrer">
+                                strum_macros 0.27.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4066,7 +4786,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tokio-rs/tokio ">tokio-macros 2.7.0</a></li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/tokio" target="_blank" rel="noopener noreferrer">
+                                tokio-macros 2.7.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4096,7 +4820,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/ParkMyCar/compact_str ">compact_str 0.9.0</a></li>
+                        <li>
+                            <a href="https://github.com/ParkMyCar/compact_str" target="_blank" rel="noopener noreferrer">
+                                compact_str 0.9.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4125,7 +4853,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/sagebind/castaway ">castaway 0.2.4</a></li>
+                        <li>
+                            <a href="https://github.com/sagebind/castaway" target="_blank" rel="noopener noreferrer">
+                                castaway 0.2.4
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4154,7 +4886,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rutrum/convert-case ">convert_case 0.10.0</a></li>
+                        <li>
+                            <a href="https://github.com/rutrum/convert-case" target="_blank" rel="noopener noreferrer">
+                                convert_case 0.10.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4182,10 +4918,26 @@ SOFTWARE.</pre>
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/ratatui/ratatui ">ratatui-core 0.1.0</a></li>
-                    <li><a href=" https://github.com/ratatui/ratatui ">ratatui-crossterm 0.1.0</a></li>
-                    <li><a href=" https://github.com/ratatui/ratatui ">ratatui-widgets 0.3.0</a></li>
-                    <li><a href=" https://github.com/ratatui/ratatui ">ratatui 0.30.0</a></li>
+                        <li>
+                            <a href="https://github.com/ratatui/ratatui" target="_blank" rel="noopener noreferrer">
+                                ratatui-core 0.1.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/ratatui/ratatui" target="_blank" rel="noopener noreferrer">
+                                ratatui-crossterm 0.1.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/ratatui/ratatui" target="_blank" rel="noopener noreferrer">
+                                ratatui-widgets 0.3.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/ratatui/ratatui" target="_blank" rel="noopener noreferrer">
+                                ratatui 0.30.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4211,8 +4963,16 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/tokio-rs/tokio ">tokio-util 0.7.18</a></li>
-                    <li><a href=" https://github.com/tokio-rs/tokio ">tokio 1.51.1</a></li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/tokio" target="_blank" rel="noopener noreferrer">
+                                tokio-util 0.7.18
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tokio-rs/tokio" target="_blank" rel="noopener noreferrer">
+                                tokio 1.51.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4241,8 +5001,16 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/crossterm-rs/crossterm ">crossterm 0.29.0</a></li>
-                    <li><a href=" https://github.com/crossterm-rs/crossterm-winapi ">crossterm_winapi 0.9.1</a></li>
+                        <li>
+                            <a href="https://github.com/crossterm-rs/crossterm" target="_blank" rel="noopener noreferrer">
+                                crossterm 0.29.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/crossterm-rs/crossterm-winapi" target="_blank" rel="noopener noreferrer">
+                                crossterm_winapi 0.9.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">MIT License
 
@@ -4271,7 +5039,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rkyv/rkyv ">rkyv_derive 0.8.15</a></li>
+                        <li>
+                            <a href="https://github.com/rkyv/rkyv" target="_blank" rel="noopener noreferrer">
+                                rkyv_derive 0.8.15
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
@@ -4301,7 +5073,11 @@ DEALINGS IN THE SOFTWARE.</pre>
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/dtolnay/zmij ">zmij 1.0.21</a></li>
+                        <li>
+                            <a href="https://github.com/dtolnay/zmij" target="_blank" rel="noopener noreferrer">
+                                zmij 1.0.21
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
@@ -4332,7 +5108,11 @@ DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/srothgan/tui-textarea ">tui-textarea-2 0.10.2</a></li>
+                        <li>
+                            <a href="https://github.com/srothgan/tui-textarea" target="_blank" rel="noopener noreferrer">
+                                tui-textarea-2 0.10.2
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">The MIT License
 
@@ -4361,8 +5141,16 @@ THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/BurntSushi/aho-corasick ">aho-corasick 1.1.4</a></li>
-                    <li><a href=" https://github.com/BurntSushi/memchr ">memchr 2.8.0</a></li>
+                        <li>
+                            <a href="https://github.com/BurntSushi/aho-corasick" target="_blank" rel="noopener noreferrer">
+                                aho-corasick 1.1.4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/BurntSushi/memchr" target="_blank" rel="noopener noreferrer">
+                                memchr 2.8.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">The MIT License (MIT)
 
@@ -4391,7 +5179,11 @@ THE SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/rapidfuzz/strsim-rs ">strsim 0.11.1</a></li>
+                        <li>
+                            <a href="https://github.com/rapidfuzz/strsim-rs" target="_blank" rel="noopener noreferrer">
+                                strsim 0.11.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">The MIT License (MIT)
 
@@ -4422,8 +5214,16 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/JelteF/derive_more ">derive_more-impl 2.1.1</a></li>
-                    <li><a href=" https://github.com/JelteF/derive_more ">derive_more 2.1.1</a></li>
+                        <li>
+                            <a href="https://github.com/JelteF/derive_more" target="_blank" rel="noopener noreferrer">
+                                derive_more-impl 2.1.1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/JelteF/derive_more" target="_blank" rel="noopener noreferrer">
+                                derive_more 2.1.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">The MIT License (MIT)
 
@@ -4452,7 +5252,11 @@ SOFTWARE.
                 <h3 id="MIT">MIT License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/gluon-lang/lsp-types ">lsp-types 0.94.1</a></li>
+                        <li>
+                            <a href="https://github.com/gluon-lang/lsp-types" target="_blank" rel="noopener noreferrer">
+                                lsp-types 0.94.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">The MIT License (MIT)
 
@@ -4482,7 +5286,11 @@ THE SOFTWARE.
                 <h3 id="MPL-2.0">Mozilla Public License 2.0</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/mackwic/colored ">colored 3.1.1</a></li>
+                        <li>
+                            <a href="https://github.com/mackwic/colored" target="_blank" rel="noopener noreferrer">
+                                colored 3.1.1
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Mozilla Public License Version 2.0
 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
@@ -4863,7 +5671,11 @@ Exhibit B - &quot;Incompatible With Secondary Licenses&quot; Notice
                 <h3 id="Unicode-3.0">Unicode License v3</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/dtolnay/unicode-ident ">unicode-ident 1.0.24</a></li>
+                        <li>
+                            <a href="https://github.com/dtolnay/unicode-ident" target="_blank" rel="noopener noreferrer">
+                                unicode-ident 1.0.24
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">UNICODE LICENSE V3
 
@@ -4910,24 +5722,96 @@ authorization of the copyright holder.
                 <h3 id="Unicode-3.0">Unicode License v3</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_collections 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_locale_core 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_normalizer 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_normalizer_data 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_properties 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_properties_data 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">icu_provider 2.2.0</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">litemap 0.8.2</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">potential_utf 0.1.5</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">tinystr 0.8.3</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">writeable 0.6.3</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">yoke-derive 0.8.2</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">yoke 0.8.2</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">zerofrom-derive 0.1.7</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">zerofrom 0.1.7</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">zerotrie 0.2.4</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">zerovec-derive 0.11.3</a></li>
-                    <li><a href=" https://github.com/unicode-org/icu4x ">zerovec 0.11.6</a></li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_collections 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_locale_core 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_normalizer 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_normalizer_data 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_properties 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_properties_data 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                icu_provider 2.2.0
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                litemap 0.8.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                potential_utf 0.1.5
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                tinystr 0.8.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                writeable 0.6.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                yoke-derive 0.8.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                yoke 0.8.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                zerofrom-derive 0.1.7
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                zerofrom 0.1.7
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                zerotrie 0.2.4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                zerovec-derive 0.11.3
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/unicode-org/icu4x" target="_blank" rel="noopener noreferrer">
+                                zerovec 0.11.6
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">UNICODE LICENSE V3
 
@@ -4981,7 +5865,11 @@ ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation a
                 <h3 id="Zlib">zlib License</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
-                    <li><a href=" https://github.com/orlp/foldhash ">foldhash 0.2.0</a></li>
+                        <li>
+                            <a href="https://github.com/orlp/foldhash" target="_blank" rel="noopener noreferrer">
+                                foldhash 0.2.0
+                            </a>
+                        </li>
                 </ul>
                 <pre class="license-text">Copyright (c) 2024 Orson Peters
 
@@ -5003,8 +5891,7 @@ the following restrictions:
 
 3. This notice may not be removed or altered from any source distribution.</pre>
             </li>
-        </ul>
-    </main>
+    </ul>
+</main>
 </body>
-
 </html>
