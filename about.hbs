@@ -1,70 +1,221 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Third Party Licenses</title>
     <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --accent-color: #e55325;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --tag-bg: rgba(0, 0, 0, 0.04);
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            --radius-lg: 12px;
+            --radius-sm: 6px;
+        }
+
         @media (prefers-color-scheme: dark) {
-            body {
-                background: #333;
-                color: white;
-            }
-            a {
-                color: skyblue;
+            :root {
+                --bg-color: #0d1117;
+                --text-color: #c9d1d9;
+                --card-bg: #161b22;
+                --accent-color: #ff7b52;
+                --border-color: rgba(255, 255, 255, 0.1);
+                --tag-bg: rgba(255, 255, 255, 0.05);
             }
         }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem 1rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
         .container {
-            font-family: sans-serif;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
         .intro {
             text-align: center;
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
         }
+
+        .intro h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .intro p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .licenses-overview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 0;
+            list-style: none;
+            margin-bottom: 3rem;
+        }
+
+        .licenses-overview li {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease;
+        }
+
+        .licenses-overview li:hover {
+            transform: translateY(-2px);
+        }
+
         .licenses-list {
             list-style-type: none;
             margin: 0;
             padding: 0;
         }
-        .license-used-by {
-            margin-top: -10px;
+
+        .license {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
         }
+
+        .license h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+        }
+
+        .license h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .license-used-by {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0;
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .license-used-by li {
+            background: var(--tag-bg);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
         .license-text {
-            max-height: 200px;
-            overflow-y: scroll;
+            background: var(--tag-bg);
+            padding: 1.5rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono), jetbrains-mono;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            max-height: 250px;
+            overflow-y: auto;
             white-space: pre-wrap;
+            margin: 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .license-text::-webkit-scrollbar {
+            width: 8px;
+        }
+        .license-text::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .license-text::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        .license-text::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
         }
     </style>
 </head>
 
 <body>
-    <main class="container">
-        <div class="intro">
-            <h1>Third Party Licenses</h1>
-            <p>This page lists the licenses of the projects used in cargo-about.</p>
-        </div>
-    
-        <h2>Overview of licenses:</h2>
-        <ul class="licenses-overview">
-            {{#each overview}}
-            <li><a href="#{{id}}">{{name}}</a> ({{count}})</li>
-            {{/each}}
-        </ul>
+<main class="container">
+    <div class="intro">
+        <h1>Third Party Licenses</h1>
+        <p>This page lists the licenses of the projects used in cargo-about.</p>
+    </div>
 
-        <h2>All license text:</h2>
-        <ul class="licenses-list">
-            {{#each licenses}}
+    <h2>Overview of licenses</h2>
+    <ul class="licenses-overview">
+        {{#each overview}}
+            <li><a href="#{{id}}">{{name}}</a> ({{count}})</li>
+        {{/each}}
+    </ul>
+
+    <h2>All license text</h2>
+    <ul class="licenses-list">
+        {{#each licenses}}
             <li class="license">
                 <h3 id="{{id}}">{{name}}</h3>
                 <h4>Used by:</h4>
                 <ul class="license-used-by">
                     {{#each used_by}}
-                    <li><a href="{{#if crate.repository}} {{crate.repository}} {{else}} https://crates.io/crates/{{crate.name}} {{/if}}">{{crate.name}} {{crate.version}}</a></li>
+                        <li>
+                            <a href="{{#if crate.repository}}{{crate.repository}}{{else}}https://crates.io/crates/{{crate.name}}{{/if}}" target="_blank" rel="noopener noreferrer">
+                                {{crate.name}} {{crate.version}}
+                            </a>
+                        </li>
                     {{/each}}
                 </ul>
                 <pre class="license-text">{{text}}</pre>
             </li>
-            {{/each}}
-        </ul>
-    </main>
+        {{/each}}
+    </ul>
+</main>
 </body>
-
 </html>
