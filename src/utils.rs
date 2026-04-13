@@ -5,8 +5,9 @@
 ///
 /// This function parses the input character by character, detecting ANSI escape
 /// sequences (starting with `\u{001b}`) and skipping them entirely.
+#[must_use]
 pub fn strip_ansi_codes(s: &str) -> String {
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len());
     let mut chars = s.chars().peekable();
 
     while let Some(ch) = chars.next() {

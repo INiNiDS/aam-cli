@@ -42,7 +42,7 @@ impl FileError {
         }
     }
 
-    fn default_help_for_error(err: &AamError) -> &'static str {
+    const fn default_help_for_error(err: &AamError) -> &'static str {
         match err {
             AamError::CircularDependency { .. } => {
                 "types in AAM must be acyclic. Consider using a primitive type or breaking the loop."
@@ -78,7 +78,7 @@ impl FileError {
         }
     }
 
-    fn extract_position(err: &AamError) -> (usize, usize) {
+    const fn extract_position(err: &AamError) -> (usize, usize) {
         match err {
             AamError::LexError { line, column, .. } => (*line, *column),
             AamError::ParseError { line, .. } => (*line, 1),
@@ -86,7 +86,7 @@ impl FileError {
         }
     }
 
-    fn extract_code(err: &AamError) -> &'static str {
+    const fn extract_code(err: &AamError) -> &'static str {
         match err {
             AamError::CircularDependency { .. } => "E001",
             AamError::ParseError { .. } => "E002",
@@ -106,7 +106,7 @@ impl FileError {
         }
     }
 
-    fn extract_title(err: &AamError) -> &'static str {
+    const fn extract_title(err: &AamError) -> &'static str {
         match err {
             AamError::CircularDependency { .. } => "cyclic dependency detected",
             AamError::ParseError { .. } => "parse error",

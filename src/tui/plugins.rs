@@ -9,7 +9,7 @@ pub trait Plugin: Debug + Send + Sync {
     fn description(&self) -> &str;
 
     // Lifecycle hooks
-    /// # Errorsrr
+    /// # Errors
     /// Returns an error if plugin initialization fails.
     fn on_init(&mut self) -> Result<()> {
         Ok(())

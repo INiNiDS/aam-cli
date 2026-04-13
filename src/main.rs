@@ -2,6 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Ported from APACHE 2.0
+#![deny(clippy::pedantic, clippy::nursery, clippy::cargo)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::option_if_let_else)]
+#![allow(clippy::cargo_common_metadata)]
+#![allow(clippy::multiple_crate_versions)]
 
 pub mod lsp;
 pub mod tui;
@@ -57,7 +63,7 @@ enum Commands {
     Lsp,
 }
 
-fn run_check(file: &PathBuf) {
+fn run_check(file: &std::path::Path) {
     match AAM::load(file) {
         Ok(aam) => {
             println!("✓ File {} is valid", file.display());
@@ -79,7 +85,7 @@ fn run_check(file: &PathBuf) {
     }
 }
 
-fn run_format(file: &PathBuf, dry_run: bool) -> Result<()> {
+fn run_format(file: &std::path::Path, dry_run: bool) -> Result<()> {
     let content = fs::read_to_string(file)
         .with_context(|| format!("Failed to read file: {}", file.display()))?;
 
@@ -107,7 +113,7 @@ fn run_format(file: &PathBuf, dry_run: bool) -> Result<()> {
     Ok(())
 }
 
-fn run_get(file: &PathBuf, key: &str) -> Result<()> {
+fn run_get(file: &std::path::Path, key: &str) -> Result<()> {
     let content = fs::read_to_string(file)
         .with_context(|| format!("Failed to read file: {}", file.display()))?;
 

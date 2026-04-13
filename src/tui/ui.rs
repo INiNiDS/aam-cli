@@ -267,23 +267,11 @@ fn render_status_bar(f: &mut Frame, app: &App, area: Rect) {
         .alignment(ratatui::layout::Alignment::Right);
     f.render_widget(status_paragraph, area);
 }
-// HIGH COMPLEXITY
-fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
-    let text_color = if is_focused {
-        Color::White
-    } else {
-        Color::DarkGray
-    };
-
-    let hint_str: String = if app.input_line.starts_with("open") || app.input_line.starts_with("o ")
-    {
-        let input_after_open = if app.input_line.starts_with("open ") {
-            &app.input_line[5..]
-        } else if app.input_line.starts_with("o ") {
-            &app.input_line[2..]
-        } else {
-            ""
-        };
+fn get_input_hint(input_line: &str) -> String {
+    if input_line.starts_with("open") || input_line.starts_with("o ") {
+        let input_after_open = input_line
+            .strip_prefix("open ")
+            .unwrap_or_else(|| input_line.strip_prefix("o ").unwrap_or_default());
 
         crate::tui::get_path_completions(input_after_open)
             .first()
@@ -293,10 +281,21 @@ fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
     } else {
         KNOWN_COMMANDS
             .iter()
-            .find_map(|cmd| cmd.strip_prefix(&app.input_line))
+            .find_map(|cmd| cmd.strip_prefix(input_line))
             .unwrap_or("")
             .to_string()
+    }
+}
+
+// REDUCED COMPLEXITY
+fn build_input_spans<'a>(app: &'a App<'_>, is_focused: bool) -> Vec<Span<'a>> {
+    let text_color = if is_focused {
+        Color::White
+    } else {
+        Color::DarkGray
     };
+
+    let hint_str = get_input_hint(&app.input_line);
 
     let mut input_spans = vec![Span::styled(
         if is_focused { "> " } else { "  " },
@@ -415,7 +414,7 @@ struct BorderRenderer {
 }
 
 impl BorderRenderer {
-    fn new(
+    const fn new(
         head: usize,
         total_perimeter: usize,
         tail_len: usize,
@@ -440,12 +439,12 @@ impl BorderRenderer {
         }
     }
 
-    fn is_snake_active(&self, pos: usize) -> bool {
+    const fn is_snake_active(&self, pos: usize) -> bool {
         self.show_animations
             && get_snake_color(self.head, pos, self.total_perimeter, self.tail_len).is_some()
     }
 }
-fn top_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static str {
+const fn top_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static str {
     if i == 0 {
         "╭"
     } else if i + 1 == width {
@@ -457,7 +456,12 @@ fn top_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static st
     }
 }
 
-fn top_logo_char(i: usize, a1_pos: usize, a2_pos: usize, m_pos: usize) -> Option<&'static str> {
+const fn top_logo_char(
+    i: usize,
+    a1_pos: usize,
+    a2_pos: usize,
+    m_pos: usize,
+) -> Option<&'static str> {
     if i == m_pos {
         Some("M")
     } else if i == a1_pos || i == a2_pos {
@@ -491,7 +495,7 @@ fn animated_logo_color(renderer: &BorderRenderer, pos: usize) -> Color {
 
 fn render_top_border(
     f: &mut Frame,
-    area: &Rect,
+    area: Rect,
     width: usize,
     renderer: &BorderRenderer,
     a1_pos: usize,
@@ -502,15 +506,16 @@ fn render_top_border(
 
     for i in 0..width {
         let is_snake_active = renderer.is_snake_active(i);
-        let mut char_str = top_border_char(i, width, is_snake_active);
-        let mut letter_color = renderer.get_color(i);
-        let mut modifier = Modifier::empty();
-
-        if let Some(logo_char) = top_logo_char(i, a1_pos, a2_pos, m_pos) {
-            char_str = logo_char;
-            letter_color = animated_logo_color(renderer, i);
-            modifier = Modifier::BOLD;
-        }
+        let (char_str, letter_color, modifier) =
+            if let Some(logo_char) = top_logo_char(i, a1_pos, a2_pos, m_pos) {
+                (logo_char, animated_logo_color(renderer, i), Modifier::BOLD)
+            } else {
+                (
+                    top_border_char(i, width, is_snake_active),
+                    renderer.get_color(i),
+                    Modifier::empty(),
+                )
+            };
 
         top_spans.push(Span::styled(
             char_str,
@@ -530,7 +535,7 @@ fn render_top_border(
 
 fn render_right_border(
     f: &mut Frame,
-    area: &Rect,
+    area: Rect,
     height: usize,
     base_pos: usize,
     renderer: &BorderRenderer,
@@ -554,7 +559,7 @@ fn render_right_border(
         );
     }
 }
-fn bottom_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static str {
+const fn bottom_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static str {
     if i == 0 {
         "╯"
     } else if i + 1 == width {
@@ -568,7 +573,7 @@ fn bottom_border_char(i: usize, width: usize, is_snake_active: bool) -> &'static
 
 fn render_bottom_border(
     f: &mut Frame,
-    area: &Rect,
+    area: Rect,
     width: usize,
     base_pos: usize,
     renderer: &BorderRenderer,
@@ -615,7 +620,7 @@ fn render_bottom_border(
 
 fn render_left_border(
     f: &mut Frame,
-    area: &Rect,
+    area: Rect,
     height: usize,
     base_pos: usize,
     renderer: &BorderRenderer,
@@ -640,7 +645,7 @@ fn render_left_border(
     }
 }
 
-fn get_snake_color(
+const fn get_snake_color(
     head: usize,
     pos: usize,
     total_perimeter: usize,
@@ -690,12 +695,12 @@ pub fn render_perimeter_animated_bar(f: &mut Frame, area: Rect, app: &App) {
     let a2_pos = width / 2;
     let m_pos = (width * 3) / 4;
 
-    render_top_border(f, &area, width, &renderer, a1_pos, a2_pos, m_pos);
-    render_right_border(f, &area, height, width, &renderer);
-    render_bottom_border(f, &area, width, width + height.saturating_sub(2), &renderer);
+    render_top_border(f, area, width, &renderer, a1_pos, a2_pos, m_pos);
+    render_right_border(f, area, height, width, &renderer);
+    render_bottom_border(f, area, width, width + height.saturating_sub(2), &renderer);
     render_left_border(
         f,
-        &area,
+        area,
         height,
         width * 2 + height.saturating_sub(2) - 2,
         &renderer,

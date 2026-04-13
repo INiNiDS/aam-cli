@@ -30,14 +30,15 @@ pub const KNOWN_COMMANDS: &[&str] = &[
 ];
 
 // Path autocompletion for the open command
+#[must_use]
 pub fn get_path_completions(partial_path: &str) -> Vec<String> {
     let mut completions = Vec::new();
 
     // If path is empty, show files in the current directory
     let (dir_path, name_prefix) = if partial_path.is_empty() {
-        (".".to_string(), "".to_string())
+        (".".to_string(), String::new())
     } else if partial_path.ends_with('/') {
-        (partial_path.to_string(), "".to_string())
+        (partial_path.to_string(), String::new())
     } else {
         let path = PathBuf::from(partial_path);
         match (path.parent(), path.file_name()) {
@@ -78,13 +79,13 @@ pub fn get_path_completions(partial_path: &str) -> Vec<String> {
     completions
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum FocusArea {
     Editor,
     Input,
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum ViewMode {
     Tabbed,
     Split,
@@ -113,7 +114,7 @@ pub struct App<'a> {
 }
 
 impl<'a> App<'a> {
-    fn load_initial_files(file_paths: Option<&Vec<PathBuf>>) -> Result<Vec<FileTab<'a>>> {
+    fn load_initial_files(file_paths: Option<&[PathBuf]>) -> Result<Vec<FileTab<'a>>> {
         let mut files = Vec::new();
         let mut seen_paths = std::collections::HashSet::new();
 
@@ -140,7 +141,7 @@ impl<'a> App<'a> {
         }
     }
 
-    fn toggle_view_mode(&mut self) {
+    const fn toggle_view_mode(&mut self) {
         self.view_mode = match self.view_mode {
             ViewMode::Tabbed => ViewMode::Split,
             ViewMode::Split => ViewMode::Tabbed,
@@ -241,7 +242,7 @@ impl<'a> App<'a> {
         // Autocompletion for the "open" command
         if parts.len() == 1 && parts[0] == "open" {
             if let Some(first_completion) = get_path_completions("").first() {
-                self.input_line = format!("open {}", first_completion);
+                self.input_line = format!("open {first_completion}");
             }
         } else if parts.len() >= 2 && (parts[0] == "open" || parts[0] == "o") {
             // Get the already typed path
@@ -252,7 +253,7 @@ impl<'a> App<'a> {
                 .collect::<Vec<_>>()
                 .join(" ");
             if let Some(first_completion) = get_path_completions(&input_after_open).first() {
-                self.input_line = format!("open {}", first_completion);
+                self.input_line = format!("open {first_completion}");
             }
         }
     }
@@ -335,7 +336,7 @@ impl<'a> App<'a> {
     ///
     /// # Errors
     /// Returns an error if file reading fails.
-    pub fn new(file_paths: Option<&Vec<PathBuf>>) -> Result<Self> {
+    pub fn new(file_paths: Option<&[PathBuf]>) -> Result<Self> {
         let files = Self::load_initial_files(file_paths)?;
 
         let active_file_index = if files.is_empty() { None } else { Some(0) };
@@ -393,22 +394,18 @@ impl<'a> App<'a> {
         let dist_to_a2_cyclic = dist_to_a2.min(total_perimeter - dist_to_a2);
         let dist_to_m_cyclic = dist_to_m.min(total_perimeter - dist_to_m);
 
-        let mut speed_mult = 1.0;
+        let distances = [dist_to_a1_cyclic, dist_to_a2_cyclic, dist_to_m_cyclic];
+        let mut speed_mult = 1.0_f64;
 
-        if dist_to_a1_cyclic < slow_radius {
-            let t = 1.0 - dist_to_a1_cyclic / slow_radius;
-            speed_mult *= 1.0 - (1.0 - slow_factor) * t;
-        }
-        if dist_to_a2_cyclic < slow_radius {
-            let t = 1.0 - dist_to_a2_cyclic / slow_radius;
-            speed_mult *= 1.0 - (1.0 - slow_factor) * t;
-        }
-        if dist_to_m_cyclic < slow_radius {
-            let t = 1.0 - dist_to_m_cyclic / slow_radius;
-            speed_mult *= 1.0 - (1.0 - slow_factor) * t;
+        for dist in distances {
+            if dist < slow_radius {
+                let t = 1.0 - dist / slow_radius;
+                speed_mult *= (1.0_f64 - slow_factor).mul_add(-t, 1.0);
+            }
         }
 
-        self.scanner_pos = (self.scanner_pos + base_speed * speed_mult * dt) % total_perimeter;
+        self.scanner_pos =
+            (base_speed * speed_mult).mul_add(dt, self.scanner_pos) % total_perimeter;
     }
 
     #[must_use]
@@ -565,7 +562,7 @@ impl<'a> App<'a> {
 ///
 /// # Errors
 /// Returns an error if the TUI fails to start or encounters an unrecoverable error.
-pub fn run_tui(file_paths: Option<&Vec<PathBuf>>) -> Result<()> {
+pub fn run_tui(file_paths: Option<&[PathBuf]>) -> Result<()> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;

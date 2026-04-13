@@ -3,6 +3,8 @@
 //
 // Ported from APACHE 2.0
 
+#![allow(clippy::option_if_let_else)]
+
 use aam_rs::error::AamlError;
 use aam_rs::pipeline::{DefaultLexer, DefaultParser, Lexer, Parser};
 use tower_lsp::jsonrpc::Result;
@@ -146,7 +148,7 @@ fn aaml_error_to_diagnostic(err: &AamlError) -> Diagnostic {
     }
 }
 
-fn extract_position(err: &AamlError) -> (usize, usize) {
+const fn extract_position(err: &AamlError) -> (usize, usize) {
     match err {
         AamlError::LexError { line, column, .. } => (*line, *column),
         AamlError::ParseError { line, .. } => (*line, 0),
